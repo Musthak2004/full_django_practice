@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}Newspaper App{% endblock title %}
+    <style>
+      /* General page styling */
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f9f9f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      /* Main button */
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #4a90e2, #357abd);
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+
+      button:hover {
+        background: linear-gradient(135deg, #357abd, #2c5aa0);
+        transform: translateY(-2px);
+      }
+
+      /* Options container */
+      #options {
+        display: none;
+        margin-top: 15px;
+        text-align: center;
+        animation: fadeIn 0.4s ease;
+      }
+
+      /* Option buttons */
+      .option-btn {
+        display: inline-block;
+        margin: 8px;
+        padding: 10px 20px;
+        font-size: 15px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        background: #fff;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .option-btn:hover {
+        background: #f0f8ff;
+        border-color: #4a90e2;
+        color: #4a90e2;
+        transform: scale(1.05);
+      }
+
+      /* Smooth fade animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1><a href="{% url 'home' %}">Newspaper</a></h1>
+    <button onclick="showOptions()">{{ user.username }}</button>
+    <div id="options">
+      <button class="option-btn">Change Password</button>
+      <button class="option-btn">Log Out</button>
+    </div>
+    <main>{% block content %}{% endblock content %}</main>
+    <script>
+      function showOptions() {
+        const optionsDiv = document.getElementById("options");
+        if (
+          optionsDiv.style.display === "none" ||
+          optionsDiv.style.display === ""
+        ) {
+          optionsDiv.style.display = "block";
+        } else {
+          optionsDiv.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
