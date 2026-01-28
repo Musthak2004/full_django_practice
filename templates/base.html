@@ -3,100 +3,199 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% block title %}Newspaper App{% endblock title %}
+    <title>{% block title %}Newspaper App{% endblock title %}</title>
     <style>
-      /* General page styling */
-      body {
-        font-family: "Segoe UI", Arial, sans-serif;
-        background: #f9f9f9;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+      /* Global Reset */
+      * {
         margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      /* Main button */
+      /* Body Styling */
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #eef2f7;
+        color: #333;
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Header */
+      header {
+        background: linear-gradient(135deg, #4a90e2, #357abd);
+        color: #fff;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        position: relative;
+      }
+
+      header a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 20px;
+        transition: all 0.3s ease;
+      }
+
+      header a:hover {
+        text-decoration: underline;
+      }
+
+      /* Main Content */
+      main {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px;
+      }
+
+      /* Card Style for Forms/Content */
+      .card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      h2 {
+        margin-bottom: 20px;
+        color: #357abd;
+      }
+
+      /* Buttons */
       button {
         padding: 12px 24px;
         font-size: 16px;
         font-weight: 600;
         border: none;
         border-radius: 6px;
-        background: linear-gradient(135deg, #4a90e2, #357abd);
-        color: #fff;
+        background: linear-gradient(135deg, #406794, #396a9c);
+        color: #090909;
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
       }
 
       button:hover {
-        background: linear-gradient(135deg, #357abd, #2c5aa0);
+        background: linear-gradient(135deg, #f1e8e8, #c8cfda);
         transform: translateY(-2px);
       }
 
-      /* Options container */
+      /* Dropdown Menu */
       #options {
         display: none;
-        margin-top: 15px;
-        text-align: center;
-        animation: fadeIn 0.4s ease;
-      }
-
-      /* Option buttons */
-      .option-btn {
-        display: inline-block;
-        margin: 8px;
-        padding: 10px 20px;
-        font-size: 15px;
-        border-radius: 6px;
-        border: 1px solid #ddd;
+        position: absolute;
+        right: 30px;
+        top: 60px;
         background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        padding: 10px;
+        min-width: 180px;
+        z-index: 1000;
+      }
+
+      #options a {
+        display: block;
+        padding: 10px;
         color: #333;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background 0.3s ease;
       }
 
-      .option-btn:hover {
+      #options a:hover {
         background: #f0f8ff;
-        border-color: #4a90e2;
-        color: #4a90e2;
-        transform: scale(1.05);
+        color: #357abd;
       }
 
-      /* Smooth fade animation */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      /* Form Styling */
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      form input,
+      form select,
+      form textarea {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 15px;
+      }
+
+      /* Footer */
+      footer {
+        background: #2c3e50;
+        text-align: center;
+        padding: 15px;
+        font-size: 14px;
+        color: #fff;
+      }
+      .logout-btn {
+        background: none;
+        border: none;
+        color: #357abd;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: underline;
       }
     </style>
   </head>
   <body>
-    <h1><a href="{% url 'home' %}">Newspaper</a></h1>
-    <button onclick="showOptions()">{{ user.username }}</button>
-    <div id="options">
-      <button class="option-btn">Change Password</button>
-      <button class="option-btn">Log Out</button>
-    </div>
-    <main>{% block content %}{% endblock content %}</main>
+    <header>
+      <a href="{% url 'home' %}">📰 Newspaper</a>
+      {% if user.is_authenticated %}
+      <div>
+        <span>Hi, {{ user.username }}</span>
+        <button onclick="showOptions()">⚙️</button>
+        <div id="options">
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Log Out</button>
+          </form>
+          <form method="post" action="{% url 'password_change' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Change Password</button>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <div>
+        <a href="{% url 'login' %}">Log In</a> |
+        <a href="{% url 'signup' %}">Sign Up</a>
+      </div>
+      {% endif %}
+    </header>
+
+    <main>
+      <div class="card">{% block content %}{% endblock content %}</div>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Newspaper App. All rights reserved.</p>
+    </footer>
+
     <script>
       function showOptions() {
         const optionsDiv = document.getElementById("options");
-        if (
-          optionsDiv.style.display === "none" ||
-          optionsDiv.style.display === ""
-        ) {
-          optionsDiv.style.display = "block";
-        } else {
-          optionsDiv.style.display = "none";
-        }
+        optionsDiv.style.display =
+          optionsDiv.style.display === "block" ? "none" : "block";
       }
     </script>
   </body>
